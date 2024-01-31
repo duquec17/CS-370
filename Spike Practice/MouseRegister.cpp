@@ -5,13 +5,13 @@
 #include <string>
 
 //Screen dimension constants
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+const int SCREEN_WIDTH = 1000;
+const int SCREEN_HEIGHT = 600;
 
 //Button constants
-const int BUTTON_WIDTH = 300;
-const int BUTTON_HEIGHT = 200;
-const int TOTAL_BUTTONS = 4;
+const int BUTTON_WIDTH = 250;
+const int BUTTON_HEIGHT = 149;
+const int TOTAL_BUTTONS = 16;
 
 enum LButtonSprite
 {
@@ -19,7 +19,7 @@ enum LButtonSprite
 	BUTTON_SPRITE_MOUSE_OVER_MOTION = 1,
 	BUTTON_SPRITE_MOUSE_DOWN = 2,
 	BUTTON_SPRITE_MOUSE_UP = 3,
-	BUTTON_SPRITE_TOTAL = 4
+	BUTTON_SPRITE_TOTAL = 16
 };
 
 //Texture wrapper class
@@ -418,10 +418,17 @@ bool loadMedia()
 		}
 
 		//Set buttons in corners
-		gButtons[0].setPosition(0, 0);
-		gButtons[1].setPosition(SCREEN_WIDTH - BUTTON_WIDTH, 0);
-		gButtons[2].setPosition(0, SCREEN_HEIGHT - BUTTON_HEIGHT);
-		gButtons[3].setPosition(SCREEN_WIDTH - BUTTON_WIDTH, SCREEN_HEIGHT - BUTTON_HEIGHT);
+		//gButtons[0].setPosition(0, 0);
+		//gButtons[1].setPosition(SCREEN_WIDTH - BUTTON_WIDTH, 0);
+		//gButtons[2].setPosition(0, SCREEN_HEIGHT - BUTTON_HEIGHT);
+		//gButtons[3].setPosition(SCREEN_WIDTH - BUTTON_WIDTH, SCREEN_HEIGHT - BUTTON_HEIGHT);
+
+		//New set buttons everywhere
+		for (int i = 0; i < TOTAL_BUTTONS; i++) {
+			int row = i / 4;
+			int col = i % 4;
+			gButtons[i].setPosition(col * SCREEN_WIDTH / 4, row * SCREEN_HEIGHT / 4);
+		}
 	}
 
 	return success;
