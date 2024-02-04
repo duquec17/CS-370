@@ -14,8 +14,9 @@ SDL_Renderer* renderer = nullptr;
 int tiles[ROWS][COLS] = { 0 };  // 2D array to represent tiles
 int hoverTilesRow = -1;
 int hoverTilesCol = -1;
-//std::chrono::time_point<std::chrono::steady_clock> hoverStartTime;
+std::chrono::time_point<std::chrono::steady_clock> hoverStartTime;
 std::chrono::time_point<std::chrono::steady_clock> clickStartTime;
+bool isTimerActive = false;
 
 
 void initSDL() {
@@ -27,6 +28,9 @@ void initSDL() {
 
     // Create renderer
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+    // Hide Mouse
+    SDL_ShowCursor(SDL_DISABLE);
 }
 
 void closeSDL() {
@@ -62,8 +66,10 @@ void drawTiles() {
                 if (elapsedTime >= 3) {
                     //Reverts color
                     tiles[row][col] = 0;
+                    //Resets timer flag
+                    isTimerActive = false; 
                 }
-            } else if (row == hoverTilesRow && col == hoverTilesCol) {
+            } else if ((row == hoverTilesRow && col == hoverTilesCol &&!isTimerActive) || (row == hoverTilesRow && col == hoverTilesCol && isTimerActive)) {
                 //If mouse is hovering over tile fill with temporary grey color
                 SDL_SetRenderDrawColor(renderer, 169, 169, 169, 255);
 
@@ -88,7 +94,7 @@ int main(int argc, char* args[]) {
             if (e.type == SDL_QUIT) {
                 quit = true;
             }
-            else if (e.type == SDL_MOUSEBUTTONDOWN) {
+            else if (e.type == SDL_MOUSEBUTTONDOWN && !isTimerActive) {
                 // Mark the clicked tile
                 int mouseX, mouseY;
                 SDL_GetMouseState(&mouseX, &mouseY);
@@ -100,6 +106,7 @@ int main(int argc, char* args[]) {
 
                     //Set the timer for reverting the color
                     clickStartTime = std::chrono::steady_clock::now();
+                    isTimerActive = true; 
                 }
             }
             else if (e.type == SDL_MOUSEMOTION) {
@@ -108,6 +115,8 @@ int main(int argc, char* args[]) {
                 SDL_GetMouseState(&mouseX, &mouseY);
                 hoverTilesRow = mouseY / TILE_SIZE;
                 hoverTilesCol = mouseX / TILE_SIZE;
+
+               // hoverStartTime = std::chrono::steady_clock::now();
             }
         }
 
