@@ -2,6 +2,7 @@
 
 #include <cstdlib>
 #include <ctime>
+#include <string>
 
 #include <SDL.h>
 #include <SDL2_gfxPrimitives.h>
@@ -22,6 +23,7 @@ inline int constrain(int x, int A, int B) {
 }
 
 int main(int argc, char* argv[]) {
+	
 	srand(time(nullptr));
 	SDL_Window *w = nullptr;
 	SDL_Surface *s = nullptr;
