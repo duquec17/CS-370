@@ -15,8 +15,8 @@
 using namespace std;
 
 
-const int WIDTH = 1000;
-const int HEIGHT = 700;
+const int WIDTH = 1600;
+const int HEIGHT = 900;
 
 map <string, state *> states;
 string current_state = "";
@@ -82,17 +82,17 @@ int main(int argc, char *argv[]) {
 				switch(e.type){
 					case SDL_QUIT: quit = true; break;
 					case SDL_KEYDOWN:
-					switch(e.key.keysym.sym) {
-						case SDLK_ESCAPE:  quit = true;  break;
-						default: break;
-					}
+						switch(e.key.keysym.sym) {
+							case SDLK_ESCAPE:  quit = true;  break;
+							default: break;
+						} break;
 					default: break;
 				}
 			}
 		}
 
 		/* Draw everything that matters */
-		SDL_SetRenderDrawColor(rend, 0xDD, 0xBB, 0xFF, 0xFF);
+		SDL_SetRenderDrawColor(rend, 0xCC, 0xEE, 0xFF, 0xFF);
 		SDL_RenderClear(rend);
 		current_state_ptr->draw();
 

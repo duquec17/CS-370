@@ -18,7 +18,6 @@ public:
 	state(SDL_Renderer *rend);
 	~state();
 
-
 	virtual bool enter() = 0;
 	virtual bool leave() = 0;
 	virtual bool draw() = 0;
