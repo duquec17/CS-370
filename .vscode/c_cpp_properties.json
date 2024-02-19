@@ -5,7 +5,11 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/SRC/SDL2/include",
-                "${workspaceFolder}/SRC/SDL2/lib"
+                "${workspaceFolder}/SRC/SDL2/lib",
+                "${workspaceFolder}/SRC/SDL2_image-2.8.2/include",
+                "${workspaceFolder}/SRC/SDL2_image-2.8.2/lib",
+                "${workspaceFolder}/SRC/SDL2_mixer-2.8.0/include",
+                "${workspaceFolder}/SRC/SDL2_mixer-2.8.0/lib"
             ],
             "defines": [
                 "_DEBUG",
