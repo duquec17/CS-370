@@ -2,8 +2,9 @@
 
 #include <SDL.h>
 
-#include "headers/game.h"
-#include "headers/state.h"
+#include "game.h"
+#include "state.h"
+#include "Lightning.h" // Include the header file
 
 using namespace std;
 
@@ -57,6 +58,8 @@ bool game_state::draw() {
 	//draw player
 	SDL_SetRenderDrawColor(renderer, 0xDD, 0xBB, 0xFF, 0xFF);
 	SDL_RenderFillRect(renderer, &player);
+
+	drawLightning(renderer, 0, 0, mouse_x, mouse_y);
 
 	return true;
 }

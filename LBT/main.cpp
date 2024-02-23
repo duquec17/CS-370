@@ -8,8 +8,8 @@
 #include <SDL_mixer.h>
 
 
-#include "headers/state.h"
-#include "headers/game.h"
+#include "state.h"
+#include "game.h"
 
 using namespace std;
 
