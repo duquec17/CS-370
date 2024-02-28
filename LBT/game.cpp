@@ -1,16 +1,28 @@
 #include <iostream>
 
-#include <SDL.h>
+#include <SDL.h> //SDL library
+#include <SDL2_gfxPrimitives.h> //SDL2_GFX library
 
-#include "game.h"
-#include "state.h"
-#include "Lightning.h" // Include the header file
+#include "game.h" 
+#include "state.h" 
+#include "Lightning.h" //Include the lightning header file
 
 using namespace std;
 
 
 inline int constrain(int x, int A, int B) {
 	return std::min(std::max((x),A),B);
+}
+
+//Lightning condition variables
+bool lightningActive = false;
+bool lightningAlreadyActive = false;
+
+// Timer callback function
+Uint32 timerCallback(Uint32 interval, void* param) {
+	lightningActive = false; // Set lightningActive to false after 3 seconds
+	lightningAlreadyActive = false;
+	return 0;
 }
 
 
@@ -28,8 +40,8 @@ game_state::game_state(SDL_Renderer *rend) : state(rend) {
 	go_right = false;
 }
 
-game_state::~game_state() {
-
+game_state::~game_state() 
+{
 }
 
 
@@ -59,7 +71,11 @@ bool game_state::draw() {
 	SDL_SetRenderDrawColor(renderer, 0xDD, 0xBB, 0xFF, 0xFF);
 	SDL_RenderFillRect(renderer, &player);
 
-	drawLightning(renderer, 0, 0, mouse_x, mouse_y);
+	//draws lightning circle if lightning state is set as false
+	if (lightningActive && !lightningAlreadyActive) {
+		// Draw lightning circle
+		drawLightning(renderer, 0, 0, mouse_x, mouse_y);
+	}
 
 	return true;
 }
@@ -107,8 +123,15 @@ bool game_state::handle_event(const SDL_Event &event) {
 					break;
 				default: break;
 			} break;
-		case SDL_MOUSEBUTTONDOWN: /* currently unused */
-			SDL_GetMouseState(&mouse_x, &mouse_y);
+		case SDL_MOUSEBUTTONDOWN: 
+			if (!lightningActive ) {
+				SDL_GetMouseState(&mouse_x, &mouse_y);
+				// Set a timer for 2 real-world seconds to set lightningActive to false
+				SDL_AddTimer(2000, timerCallback, nullptr);
+				lightningActive = true; // Set lightningActive to true when lightning appears
+			// Update the flag to indicate that a circle is already active
+				result = true;
+			}
 			break;
 		default: break;
 	}
