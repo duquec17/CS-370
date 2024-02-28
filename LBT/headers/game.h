@@ -4,6 +4,7 @@
 #include <SDL.h>
 
 #include "state.h"
+#include "Timer.h"
 
 class game_state : public state {
 public:
@@ -29,6 +30,10 @@ public:
 
 	SDL_Rect player;
 	int player_vel;
+
+	bool cycle;
 };
+
+extern Timer movement_timer;
 
 #endif  /* __GAME_H__ */

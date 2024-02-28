@@ -3,8 +3,8 @@
 #include <cstdlib>
 
 #include <SDL.h>
-#include <SDL2_gfxPrimitives.h>
-#include <SDL2_framerate.h>
+// #include <SDL2_gfxPrimitives.h>
+// #include <SDL2_framerate.h>
 #include <SDL_mixer.h>
 
 
@@ -22,6 +22,14 @@ map <string, state *> states;
 string current_state = "";
 string last_state = "";
 state *current_state_ptr = nullptr;
+
+
+void cycle_mvt() {
+	if(current_state == "game")
+		dynamic_cast<game_state *>(current_state_ptr)->cycle = true;
+}
+Timer movement_timer(cycle_mvt, 25, -1, Timer::OnComplete::RESET);
+
 
 
 bool transition(string s) {
@@ -60,8 +68,8 @@ int main(int argc, char *argv[]) {
 		exit(EXIT_FAILURE);
 	}
 
-	FPSmanager fps;
-	SDL_initFramerate(&fps);
+	// FPSmanager fps;
+	// SDL_initFramerate(&fps);
 
 
 	window = SDL_CreateWindow("Lightning Bolt Town ver:a0.1", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
@@ -97,9 +105,11 @@ int main(int argc, char *argv[]) {
 		current_state_ptr->draw();
 
 		SDL_RenderPresent(renderer);
-		SDL_framerateDelay(&fps);
+		// SDL_framerateDelay(&fps);
 	}
 
+
+	movement_timer.stop();
 
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);

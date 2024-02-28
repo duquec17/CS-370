@@ -25,5 +25,7 @@ public:
 };
 
 extern std::map <std::string, state *> states;
+extern std::string current_state;
+extern std::string last_state;
 
 #endif  /* __STATE_H__ */
