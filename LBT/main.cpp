@@ -14,8 +14,8 @@
 using namespace std;
 
 
-const int WIDTH = 1600;
-const int HEIGHT = 900;
+const int WIDTH = 1280;
+const int HEIGHT = 720;
 
 /* public variables for all states */
 map <string, state *> states;
@@ -28,7 +28,7 @@ void cycle_mvt() {
 	if(current_state == "game")
 		dynamic_cast<game_state *>(current_state_ptr)->cycle = true;
 }
-Timer movement_timer(cycle_mvt, 25, -1, Timer::OnComplete::RESET);
+Timer movement_timer(cycle_mvt, 25, -1, Timer::OnComplete::RESTART);
 
 
 

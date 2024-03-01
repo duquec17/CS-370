@@ -26,6 +26,17 @@ game_state::game_state(SDL_Renderer *rend) : state(rend) {
 	go_left = false;
 	go_right = false;
 
+	for(int i = 0; i < WINDOW_WIDTH / TILE_SIZE; i++) {
+		for (int j = 0; j < WINDOW_HEIGHT / TILE_SIZE; j++) {
+			tile t;
+			SDL_Rect r(i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+			t.rect = r;
+			t.is_water = false;
+			t.is_wall = false;
+			map[i][j] = t;
+		}
+	}
+
 	cycle = false;
 }
 
@@ -36,6 +47,12 @@ game_state::~game_state() {
 
 bool game_state::enter() {
 	movement_timer.start();
+	map[0][0].is_water = true;
+	map[0][1].is_water = true;
+	map[1][0].is_water = true;
+	map[1][1].is_water = true;
+
+	map[31][17].is_wall = true;
 
 	return true;
 }
@@ -59,7 +76,17 @@ bool game_state::draw() {
 			player.x = constrain(player.x + player_vel, 0, WINDOW_WIDTH-player.w);
 		}
 		cycle = false;
-		movement_timer.start();
+	}
+
+	//draw map
+	for(auto i : reinterpret_cast<tile (&)[sizeof(map) / sizeof(**map)]>(map)) {
+		if(i.is_water)
+			SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0xFF, 0xFF); \
+		else if(i.is_wall)
+			SDL_SetRenderDrawColor(renderer, 0x88, 0x88, 0x88, 0xFF);
+		else
+			SDL_SetRenderDrawColor(renderer, 0xCC, 0xEE, 0xFF, 0xFF);
+		SDL_RenderFillRect(renderer, &i.rect);
 	}
 
 	//draw player
