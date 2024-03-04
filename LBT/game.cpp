@@ -36,6 +36,7 @@ game_state::~game_state() {
 
 bool game_state::enter() {
 	movement_timer.start();
+	survival_timer.start();
 
 	return true;
 }

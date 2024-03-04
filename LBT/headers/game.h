@@ -34,6 +34,6 @@ public:
 	bool cycle;
 };
 
-extern Timer movement_timer;
+extern Timer movement_timer, survival_timer;
 
 #endif  /* __GAME_H__ */
