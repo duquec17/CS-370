@@ -1,6 +1,6 @@
 #include <SDL.h>
 
-#include "headers/state.h"
+#include "state.h"
 
 state::state(SDL_Renderer *renderer) {
 	this->renderer = renderer;
