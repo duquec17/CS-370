@@ -47,10 +47,7 @@ game_state::~game_state() {
 
 bool game_state::enter() {
 	movement_timer.start();
-	map[0][0].is_water = true;
-	map[0][1].is_water = true;
-	map[1][0].is_water = true;
-	map[1][1].is_water = true;
+	survival_timer.start();
 
 	map[31][17].is_wall = true;
 
