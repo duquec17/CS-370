@@ -1,4 +1,5 @@
 #include <SDL.h>
+#include <stdlib.h>
 
 // Screen dimensions
 const int SCREEN_WIDTH = 800;

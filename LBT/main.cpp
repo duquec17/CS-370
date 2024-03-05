@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
 
 	SDL_Window *window = nullptr;
 	SDL_Surface *surface = nullptr;
-	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0) {
+	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_TIMER) < 0) {
 		cerr << "SDL_Init() fail... " << SDL_GetError() << endl;
 		exit(EXIT_FAILURE);
 	}
