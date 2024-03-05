@@ -4,6 +4,16 @@
 #include <SDL.h>
 
 #include "state.h"
+#include "Timer.h"
+
+
+typedef struct tile tile;
+struct tile {
+	SDL_Rect rect;
+	bool is_water;
+	bool is_wall;
+};
+
 
 class game_state : public state {
 public:
@@ -18,7 +28,9 @@ public:
 	bool handle_event(const SDL_Event &event);
 
 	//initialize variables
-	const int TILE_SIZE = 50;
+	const int TILE_SIZE = 40;
+
+	tile map[32][18];
 
 	int mouse_x,mouse_y;
 
@@ -29,6 +41,10 @@ public:
 
 	SDL_Rect player;
 	int player_vel;
+
+	bool cycle;
 };
+
+extern Timer movement_timer, survival_timer;
 
 #endif  /* __GAME_H__ */
