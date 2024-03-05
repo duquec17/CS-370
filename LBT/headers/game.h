@@ -46,5 +46,6 @@ public:
 };
 
 extern Timer movement_timer, survival_timer;
+extern bool quit;
 
 #endif  /* __GAME_H__ */
