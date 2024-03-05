@@ -6,6 +6,7 @@
 #include "headers/game.h"
 #include "headers/state.h"
 #include "headers/Timer.h"
+#include "headers/lightning.h"
 
 using namespace std;
 
@@ -54,7 +55,7 @@ game_state::game_state(SDL_Renderer *rend) : state(rend) {
 	cycle = false;
 }
 
-game_state::~game_state() 
+game_state::~game_state()
 {
 }
 
@@ -104,7 +105,7 @@ bool game_state::draw() {
 			SDL_SetRenderDrawColor(renderer, 0xCC, 0xEE, 0xFF, 0xFF);
 		SDL_RenderFillRect(renderer, &i.rect);
 	}
-	
+
 	int lightRadius = 40;
 	//draw player if it's not hit by the lightning
 	if (!lightningAlreadyActive) {
@@ -118,7 +119,7 @@ bool game_state::draw() {
 		SDL_RenderFillRect(renderer, &player);
 	}
 
-	
+
 
 	//draws lightning circle if lightning state is set as false
 	if (lightningActive && !lightningAlreadyActive) {
@@ -150,9 +151,9 @@ bool game_state::draw() {
 
 		// Terminate the program if the player is not alive
 		if (!playerAlive) {
-			// Clean up resources if necessary
-			// SDL_Quit(); // Optionally cleanup SDL resources
-			exit(EXIT_SUCCESS); // Terminate the program
+			movement_timer.stop();
+			survival_timer.stop();
+			quit = true;
 		}
 	}
 
@@ -202,7 +203,7 @@ bool game_state::handle_event(const SDL_Event &event) {
 					break;
 				default: break;
 			} break;
-		case SDL_MOUSEBUTTONDOWN: 
+		case SDL_MOUSEBUTTONDOWN:
 			if (!lightningActive ) {
 				SDL_GetMouseState(&mouse_x, &mouse_y);
 				// Set a timer for 2 real-world seconds to set lightningActive to false

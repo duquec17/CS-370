@@ -1,7 +1,7 @@
 // Lightning.cpp
-#include "Lightning.h"
-#include "game.h"
-#include "state.h"
+#include "headers/lightning.h"
+#include "headers/game.h"
+#include "headers/state.h"
 
 #include <chrono>
 #include <SDL.h>
