@@ -7,13 +7,11 @@
 
 class DrawText {
 public:
-	DrawText(SDL_Rect textRect, SDL_Color textColor, TTF_Font* textFont);
+	DrawText(TTF_Font* textFont);
 
 	void Draw(int centerX, int centerY, SDL_Renderer* renderer, const char Text[], SDL_Color textColor);
 
 private:
-	SDL_Rect mTextRect;
-	SDL_Color mTextColor;
 	TTF_Font* mTextFont;
 	SDL_Surface* mSurfaceMessage;
 	SDL_Texture* mTextureMessage;

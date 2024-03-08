@@ -1,8 +1,6 @@
 #include "DrawText.h"
 
-DrawText::DrawText(SDL_Rect textRect, SDL_Color textColor, TTF_Font* textFont) {
-	mTextRect = textRect;
-	mTextColor = textColor;
+DrawText::DrawText(TTF_Font* textFont) {
 	mTextFont = textFont;
 }
 
