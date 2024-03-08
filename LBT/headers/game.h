@@ -2,8 +2,11 @@
 #define __GAME_H__
 
 #include <SDL.h>
+#include <sstream>
+#include <cstring>
 
 #include "state.h"
+#include "Timer.h"
 
 class game_state : public state {
 public:
@@ -17,6 +20,9 @@ public:
 	bool draw();
 	bool handle_event(const SDL_Event &event);
 
+	//new functions
+	void createVisualtimer();
+
 	//initialize variables
 	const int TILE_SIZE = 50;
 
@@ -29,6 +35,10 @@ public:
 
 	SDL_Rect player;
 	int player_vel;
+
+	bool cycle;
 };
+
+extern Timer movement_timer, survival_timer;
 
 #endif  /* __GAME_H__ */

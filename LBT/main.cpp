@@ -3,9 +3,10 @@
 #include <cstdlib>
 
 #include <SDL.h>
-#include <SDL2_gfxPrimitives.h>
-#include <SDL2_framerate.h>
+// #include <SDL2_gfxPrimitives.h>
+// #include <SDL2_framerate.h>
 #include <SDL_mixer.h>
+#include <SDL_ttf.h>
 
 
 #include "headers/state.h"
@@ -18,24 +19,40 @@ const int WIDTH = 1600;
 const int HEIGHT = 900;
 
 /* public variables for all states */
-map <string, state *> states;
+map <string, state*> states;
 string current_state = "";
 string last_state = "";
-state *current_state_ptr = nullptr;
+state* current_state_ptr = nullptr;
+
+bool quit = false;
+
+void cycle_mvt() {
+	if (current_state == "game")
+		dynamic_cast<game_state*>(current_state_ptr)->cycle = true;
+}
+void setQuit(bool value) {
+	quit = value;
+}
+void gameComplete() {
+	setQuit(true);
+}
+Timer
+movement_timer(cycle_mvt, 10, -1, Timer::OnComplete::RESET),
+survival_timer(gameComplete, 10000, 1000, Timer::OnComplete::STOP);
 
 
 bool transition(string s) {
 	bool result = true;
 	//leave state
-	if(current_state_ptr) {
+	if (current_state_ptr) {
 		states[current_state]->leave();
 		last_state = current_state;
 	};
 	//flush
 	SDL_Event event;
-	while(SDL_PollEvent(&event)); // flush event queue
+	while (SDL_PollEvent(&event)); // flush event queue
 	//enter state
-	if(states.contains(s)) {
+	if (states.contains(s)) {
 		current_state_ptr = states[s];
 		current_state = s;
 		current_state_ptr->enter();
@@ -50,22 +67,24 @@ bool transition(string s) {
 }
 
 
-int main(int argc, char *argv[]) {
-	bool quit = false;
+int main(int argc, char* argv[]) {
 
-	SDL_Window *window = nullptr;
-	SDL_Surface *surface = nullptr;
-	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0) {
+	SDL_Window* window = nullptr;
+	SDL_Surface* surface = nullptr;
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0) {
 		cerr << "SDL_Init() fail... " << SDL_GetError() << endl;
 		exit(EXIT_FAILURE);
 	}
+	if (TTF_Init() < 0) {
+		cerr << "TTF_Init() fail... " << TTF_GetError() << endl;
+	}
 
-	FPSmanager fps;
-	SDL_initFramerate(&fps);
+	// FPSmanager fps;
+	// SDL_initFramerate(&fps);
 
 
 	window = SDL_CreateWindow("Lightning Bolt Town ver:a0.1", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
-	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
+	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
 
 	/* create all states */
 	states["game"] = new game_state(renderer);
@@ -74,19 +93,19 @@ int main(int argc, char *argv[]) {
 
 
 	SDL_Event event;
-	while(!quit) {
+	while (!quit) {
 		/* let event hanadiling update variables needed for drawing */
-		while(SDL_PollEvent(&event)) {
-			if(!current_state_ptr || !current_state_ptr->handle_event(event)) {
+		while (SDL_PollEvent(&event)) {
+			if (!current_state_ptr || !current_state_ptr->handle_event(event)) {
 				/* handle events not handled by current state */
-				switch(event.type){
-					case SDL_QUIT: quit = true; break;
-					case SDL_KEYDOWN:
-						switch(event.key.keysym.sym) {
-							case SDLK_ESCAPE:  quit = true;  break;
-							default: break;
-						} break;
+				switch (event.type) {
+				case SDL_QUIT: quit = true; break;
+				case SDL_KEYDOWN:
+					switch (event.key.keysym.sym) {
+					case SDLK_ESCAPE:  quit = true;  break;
 					default: break;
+					} break;
+				default: break;
 				}
 			}
 		}
@@ -97,13 +116,16 @@ int main(int argc, char *argv[]) {
 		current_state_ptr->draw();
 
 		SDL_RenderPresent(renderer);
-		SDL_framerateDelay(&fps);
+		// SDL_framerateDelay(&fps);
 	}
 
+
+	movement_timer.stop();
 
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
+	TTF_Quit();
 
 	return EXIT_SUCCESS;
 }
