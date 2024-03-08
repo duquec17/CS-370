@@ -83,7 +83,12 @@ bool game_state::draw() {
 	// Get the pointer to the underlying character array (C-style string)
 	const char* charArray = roundedString.c_str();
 
-	VisualTimer->Draw(renderer, charArray);
+	VisualTimer->Draw(
+		WINDOW_WIDTH / 2,
+		WINDOW_HEIGHT * 0.1f,
+		renderer,
+		charArray,
+		SDL_Color(255, 0, 0, 0));
 
 	return true;
 }
