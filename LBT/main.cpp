@@ -35,7 +35,7 @@ void endGame() {
 }
 Timer
 movement_timer(cycle_mvt, 25, -1, Timer::OnComplete::RESTART),
-survival_timer(endGame, 10000, 1000, Timer::OnComplete::STOP);
+survival_timer(endGame, 30000, 1000, Timer::OnComplete::STOP);
 
 
 

@@ -107,11 +107,6 @@ bool game_state::draw() {
 	}
 
 	int lightRadius = 40;
-	//draw player if it's not hit by the lightning
-	if (!lightningAlreadyActive) {
-		SDL_SetRenderDrawColor(renderer, 0xDD, 0xBB, 0xFF, 0xFF);
-		SDL_RenderFillRect(renderer, &player);
-	}
 
 	//draw player if it's not hit by the lightning
 	if (!lightningAlreadyActive) {
@@ -119,6 +114,11 @@ bool game_state::draw() {
 		SDL_RenderFillRect(renderer, &player);
 	}
 
+	// Draw cursor if click hasn't been made
+	if (!lightningActive) {
+		// Draw the lightning cloud at the cursor position
+		drawLightningCloud(renderer, 0, 0, mouse_x, mouse_y);
+	}
 
 
 	//draws lightning circle if lightning state is set as false
@@ -133,10 +133,12 @@ bool game_state::draw() {
 		int playerBottomLeftY = player.y + player.h;
 		int playerBottomRightX = player.x + player.w;
 		int playerBottomRightY = player.y + player.h;
-		double topLeftDistance = sqrt(pow(playerTopLeftX - mouse_x, 2) + pow(playerTopLeftY - mouse_y, 2));
-		double topRightDistance = sqrt(pow(playerTopRightX - mouse_x, 2) + pow(playerTopRightY - mouse_y, 2));
-		double bottomLeftDistance = sqrt(pow(playerBottomLeftX - mouse_x, 2) + pow(playerBottomLeftY - mouse_y, 2));
-		double bottomRightDistance = sqrt(pow(playerBottomRightX - mouse_x, 2) + pow(playerBottomRightY - mouse_y, 2));
+			drawLightning(renderer, 0, 0, strike_x, strike_y);
+			drawLightning(renderer, 0, 0, strike_x, strike_y);
+		double topLeftDistance = sqrt(pow(playerTopLeftX - strike_x, 2) + pow(playerTopLeftY - strike_y, 2));
+		double topRightDistance = sqrt(pow(playerTopRightX - strike_x, 2) + pow(playerTopRightY - strike_y, 2));
+		double bottomLeftDistance = sqrt(pow(playerBottomLeftX - strike_x, 2) + pow(playerBottomLeftY - strike_y, 2));
+		double bottomRightDistance = sqrt(pow(playerBottomRightX - strike_x, 2) + pow(playerBottomRightY - strike_y, 2));
 		// Check if any of the distances are less than or equal to the radius of the circle
 		if (topLeftDistance <= lightRadius || topRightDistance <= lightRadius ||
 			bottomLeftDistance <= lightRadius || bottomRightDistance <= lightRadius) {
@@ -146,7 +148,10 @@ bool game_state::draw() {
 		}
 		// Draw lightning circle if it's not on top of the player
 		if (lightningActive && !lightningAlreadyActive) {
-			drawLightning(renderer, 0, 0, mouse_x, mouse_y);
+			drawLightning(renderer, 0, 0, strike_x, strike_y);
+		}
+		else {
+			drawLightningCloud(renderer, 0, 0, mouse_x, mouse_y);
 		}
 
 		// Terminate the program if the player is not alive
@@ -205,12 +210,20 @@ bool game_state::handle_event(const SDL_Event &event) {
 			} break;
 		case SDL_MOUSEBUTTONDOWN:
 			if (!lightningActive ) {
-				SDL_GetMouseState(&mouse_x, &mouse_y);
+				SDL_GetMouseState(&strike_x, &strike_y);
 				// Set a timer for 2 real-world seconds to set lightningActive to false
 				SDL_AddTimer(2000, timerCallback, nullptr);
 				lightningActive = true; // Set lightningActive to true when lightning appears
 			// Update the flag to indicate that a circle is already active
 				result = true;
+			}
+			break;
+		case SDL_MOUSEMOTION:
+			// Update mouse position
+			SDL_GetMouseState(&mouse_x, &mouse_y);
+			// Draw the lightning cloud at the cursor position if lightning is not active
+			if (!lightningActive) {
+				//(renderer, 0, 0, mouse_x, mouse_y);
 			}
 			break;
 		default: break;

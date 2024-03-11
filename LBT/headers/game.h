@@ -33,6 +33,7 @@ public:
 	tile map[32][18];
 
 	int mouse_x,mouse_y;
+	int strike_x, strike_y;
 
 	bool go_up;
 	bool go_down;
