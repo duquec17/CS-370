@@ -11,10 +11,9 @@ using namespace std;
 
 DrawText* VisualTimer;
 
+
 void game_state::createVisualtimer() {
 	VisualTimer = new DrawText(
-		SDL_Rect(WINDOW_WIDTH / 2, WINDOW_HEIGHT * 0.1f, 128, 128),
-		SDL_Color(255, 0, 0, 0),
 		TTF_OpenFont("PublicPixel.ttf", 24));
 }
 
@@ -49,9 +48,14 @@ bool game_state::enter() {
 	movement_timer.start();
 	survival_timer.start();
 
+	backgroundSurface = IMG_Load("background.png");
+	backgroundTexture = SDL_CreateTextureFromSurface(renderer, backgroundSurface);
+	SDL_FreeSurface(backgroundSurface);
+
 	return true;
 }
 bool game_state::leave() {
+	SDL_DestroyTexture(backgroundTexture);
 	return true;
 }
 
@@ -71,8 +75,11 @@ bool game_state::draw() {
 			player.x = constrain(player.x + player_vel, 0, WINDOW_WIDTH - player.w);
 		}
 		cycle = false;
-		movement_timer.start();
+		//movement_timer.start();
 	}
+
+	//draw background
+	SDL_RenderCopy(renderer, backgroundTexture, nullptr, nullptr);
 
 	//draw player
 	SDL_SetRenderDrawColor(renderer, 0xDD, 0xBB, 0xFF, 0xFF);

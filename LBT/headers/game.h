@@ -37,6 +37,9 @@ public:
 	int player_vel;
 
 	bool cycle;
+
+	SDL_Surface* backgroundSurface;
+	SDL_Texture* backgroundTexture;
 };
 
 extern Timer movement_timer, survival_timer;

@@ -37,7 +37,7 @@ void gameComplete() {
 	setQuit(true);
 }
 Timer
-movement_timer(cycle_mvt, 10, -1, Timer::OnComplete::RESET),
+movement_timer(cycle_mvt, 10, -1, Timer::OnComplete::RESTART),
 survival_timer(gameComplete, 10000, 1000, Timer::OnComplete::STOP);
 
 
