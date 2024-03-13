@@ -27,7 +27,7 @@ public:
 	bool draw();
 	bool handle_event(const SDL_Event &event);
 
-	//initialize variables
+	//declare variables
 	const int TILE_SIZE = 40;
 
 	tile map[32][18];

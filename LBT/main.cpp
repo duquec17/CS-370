@@ -10,6 +10,7 @@
 
 #include "headers/state.h"
 #include "headers/game.h"
+#include "headers/menu.h"
 
 using namespace std;
 
@@ -31,7 +32,7 @@ void cycle_mvt() {
 		dynamic_cast<game_state *>(current_state_ptr)->cycle = true;
 }
 void endGame() {
-	quit = true;
+	transition("menu");
 }
 Timer
 movement_timer(cycle_mvt, 25, -1, Timer::OnComplete::RESTART),
@@ -83,8 +84,9 @@ int main(int argc, char *argv[]) {
 
 	/* create all states */
 	states["game"] = new game_state(renderer);
+	states["menu"] = new menu_state(renderer);
 	/* transistion to initial state */
-	transition("game");
+	transition("menu");
 
 
 	SDL_Event event;

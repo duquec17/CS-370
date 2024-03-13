@@ -44,7 +44,7 @@ game_state::game_state(SDL_Renderer *rend) : state(rend) {
 	for(int i = 0; i < WINDOW_WIDTH / TILE_SIZE; i++) {
 		for (int j = 0; j < WINDOW_HEIGHT / TILE_SIZE; j++) {
 			tile t;
-			SDL_Rect r(i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+			SDL_Rect r = {i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE};
 			t.rect = r;
 			t.is_water = false;
 			t.is_wall = false;
@@ -64,16 +64,20 @@ bool game_state::enter() {
 	movement_timer.start();
 	survival_timer.start();
 
-	map[0][0].is_water = true;
-	map[0][1].is_water = true;
-	map[1][0].is_water = true;
-	map[1][1].is_water = true;
-
-	map[31][17].is_wall = true;
 
 	return true;
 }
 bool game_state::leave() {
+	survival_timer.reset();
+
+	go_up = false;
+	go_down = false;
+	go_left = false;
+	go_right = false;
+
+	playerAlive = true;
+	lightningActive = false;
+
 	return true;
 }
 
@@ -153,7 +157,7 @@ bool game_state::draw() {
 		if (!playerAlive) {
 			movement_timer.stop();
 			survival_timer.stop();
-			quit = true;
+			transition("menu");
 		}
 	}
 
