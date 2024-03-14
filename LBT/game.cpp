@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include <SDL.h> //SDL library
+#include <SDL_image.h>
 #include <SDL2_gfxPrimitives.h> //SDL2_GFX library
 
 #include "headers/game.h"
@@ -15,10 +16,11 @@ inline int constrain(int x, int A, int B) {
 	return std::min(std::max((x),A),B);
 }
 
-//Lightning condition variables
+// Lightning condition variables
 bool lightningActive = false;
 bool lightningAlreadyActive = false;
 bool playerAlive = true;
+
 
 // Timer callback function
 Uint32 timerCallback(Uint32 interval, void* param) {
@@ -105,8 +107,45 @@ bool game_state::draw() {
 			SDL_SetRenderDrawColor(renderer, 0xCC, 0xEE, 0xFF, 0xFF);
 		SDL_RenderFillRect(renderer, &i.rect);
 	}
-
+    
+	//Lightning vars
 	int lightRadius = 40;
+	// Lightning sprite variables
+	const int XCNT = 20;
+	const int YCNT = 1;
+	const int FCNT = 20;
+	SDL_Surface* Lsprite_s = IMG_Load("LSSheet.png");
+	if (Lsprite_s) {
+		cout << "Surface sprite has gotten something" << endl;
+	}
+	int W = Lsprite_s->w / XCNT;
+	int H = Lsprite_s->h / YCNT;
+
+
+	SDL_Texture* Lsprite = SDL_CreateTextureFromSurface(renderer, Lsprite_s);
+	SDL_FreeSurface(Lsprite_s);
+
+	SDL_Rect rect[FCNT];
+	for (int i = 0, x = 0; x < XCNT; x++) {
+		SDL_Rect& r = rect[i++];
+		r.w = W;
+		r.h = H;
+		r.x = x * W;
+	}
+
+	SDL_Event e;
+	int scnt = 0;
+	while(!quit) {
+		int mx, my;
+		SDL_GetMouseState(&mx, &my);
+
+		if (scnt < FCNT) {
+			SDL_Rect t{ mx - (W / 2), my - (H / 2), W, H };
+			SDL_RenderCopy(renderer, Lsprite, &rect[scnt++], &t);
+		}
+
+		SDL_RenderPresent(renderer);
+	}
 
 	//draw player if it's not hit by the lightning
 	if (!lightningAlreadyActive) {
@@ -149,6 +188,7 @@ bool game_state::draw() {
 		// Draw lightning circle if it's not on top of the player
 		if (lightningActive && !lightningAlreadyActive) {
 			drawLightning(renderer, 0, 0, strike_x, strike_y);
+			scnt = 0;
 		}
 		else {
 			drawLightningCloud(renderer, 0, 0, mouse_x, mouse_y);
@@ -164,6 +204,7 @@ bool game_state::draw() {
 
 	return true;
 }
+
 
 bool game_state::handle_event(const SDL_Event &event) {
 	bool result = false;
@@ -214,7 +255,7 @@ bool game_state::handle_event(const SDL_Event &event) {
 				// Set a timer for 2 real-world seconds to set lightningActive to false
 				SDL_AddTimer(2000, timerCallback, nullptr);
 				lightningActive = true; // Set lightningActive to true when lightning appears
-			// Update the flag to indicate that a circle is already active
+			    // Update the flag to indicate that a circle is already active
 				result = true;
 			}
 			break;

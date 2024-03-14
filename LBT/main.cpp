@@ -7,7 +7,6 @@
 // #include <SDL2_framerate.h>
 #include <SDL_mixer.h>
 
-
 #include "headers/state.h"
 #include "headers/game.h"
 
@@ -16,6 +15,11 @@ using namespace std;
 
 const int WIDTH = 1280;
 const int HEIGHT = 720;
+
+//Initializing and loading variables
+SDL_Rect spiral;
+int frameWidth, frameHeight;
+int txtWidth, txtHeight;
 
 /* public variables for all states */
 map <string, state *> states;

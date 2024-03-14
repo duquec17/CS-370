@@ -17,3 +17,4 @@ void drawLightningCloud(SDL_Renderer* renderer, int startX, int startY, int endX
     // Draw the cursor at the mouse current location
     filledCircleColor(renderer, endX, endY, 30, 0x80808022); //Fill circle with gray
 }
+
