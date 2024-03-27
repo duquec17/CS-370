@@ -52,6 +52,48 @@ game_state::game_state(SDL_Renderer *rend) : state(rend) {
 			t.is_wall = false;
 			map[i][j] = t;
 		}
+	
+	}
+
+	//Loading Lightning cursor location
+	SDL_Surface* Csprite_s = IMG_Load("CSSheet.png");
+	if (Csprite_s) {
+		cout << "Cloud cursor sprite acquired" << endl;
+	}
+	CW = Csprite_s->w / XCNT;
+	CH = Csprite_s->h / YCNT;
+
+	//Converts Surface into texture for cursor Icon
+	Cursorsprite = SDL_CreateTextureFromSurface(renderer, Csprite_s);
+	SDL_FreeSurface(Csprite_s);
+
+	for (int i = 0, x = 0, y = 2; x < XCNT; x++) {
+		SDL_Rect& c = cursorAnim[i++];
+		c.w = CW;
+		c.h = CH;
+		c.y = y * CH;
+		c.x = x * CW;
+	}
+
+	//Loading Lightning strike Sprite sheet
+	SDL_Surface* Lsprite_s = IMG_Load("LEXSheet.png"); //Uses LSSheet.png
+	if (Lsprite_s) {
+		cout << "Lightning strike sprite acquired" << endl;
+	}
+	W = Lsprite_s->w / FCNT;
+	H = Lsprite_s->h;
+
+	//Converts Surface into texture for Lightning strike
+	Lsprite = SDL_CreateTextureFromSurface(renderer, Lsprite_s);
+	SDL_FreeSurface(Lsprite_s);
+
+	
+	for (int i = 0, x = 0; x < FCNT; x++) {
+		SDL_Rect& r = lightAnim[i++];
+		r.w = W;
+		r.h = H;
+		r.y = 0;
+		r.x = x * W;
 	}
 
 	cycle = false;
@@ -107,45 +149,9 @@ bool game_state::draw() {
 			SDL_SetRenderDrawColor(renderer, 0xCC, 0xEE, 0xFF, 0xFF);
 		SDL_RenderFillRect(renderer, &i.rect);
 	}
-    
+  
 	//Lightning vars
 	int lightRadius = 40;
-	// Lightning sprite variables
-	const int XCNT = 20;
-	const int YCNT = 1;
-	const int FCNT = 20;
-	SDL_Surface* Lsprite_s = IMG_Load("LSSheet.png");
-	if (Lsprite_s) {
-		cout << "Surface sprite has gotten something" << endl;
-	}
-	int W = Lsprite_s->w / XCNT;
-	int H = Lsprite_s->h / YCNT;
-
-
-	SDL_Texture* Lsprite = SDL_CreateTextureFromSurface(renderer, Lsprite_s);
-	SDL_FreeSurface(Lsprite_s);
-
-	SDL_Rect rect[FCNT];
-	for (int i = 0, x = 0; x < XCNT; x++) {
-		SDL_Rect& r = rect[i++];
-		r.w = W;
-		r.h = H;
-		r.x = x * W;
-	}
-
-	SDL_Event e;
-	int scnt = 0;
-	while(!quit) {
-		int mx, my;
-		SDL_GetMouseState(&mx, &my);
-
-		if (scnt < FCNT) {
-			SDL_Rect t{ mx - (W / 2), my - (H / 2), W, H };
-			SDL_RenderCopy(renderer, Lsprite, &rect[scnt++], &t);
-		}
-
-		SDL_RenderPresent(renderer);
-	}
 
 	//draw player if it's not hit by the lightning
 	if (!lightningAlreadyActive) {
@@ -157,8 +163,19 @@ bool game_state::draw() {
 	if (!lightningActive) {
 		// Draw the lightning cloud at the cursor position
 		drawLightningCloud(renderer, 0, 0, mouse_x, mouse_y);
-	}
 
+		// Makes ligthning cloud animation appear
+			//Makes the actual Llightning strike animation appear 
+		if (cscnt < XCNT) {
+			SDL_Rect j{ mouse_x - ((lightRadius * 1.5) / 2),  mouse_y - ((lightRadius * 1.5) / 2), lightRadius *1.5, lightRadius *1.5};
+			SDL_RenderCopy(renderer, Cursorsprite, &cursorAnim[cscnt++], &j);
+			cout << "Cloud Running" << endl;
+		}
+		else
+		{
+			cscnt = 0;
+		}
+	}
 
 	//draws lightning circle if lightning state is set as false
 	if (lightningActive && !lightningAlreadyActive) {
@@ -185,12 +202,24 @@ bool game_state::draw() {
 			lightningAlreadyActive = true; // Set lightningAlreadyActive to true to prevent further drawing of the circle
 			playerAlive = false;
 		}
+
 		// Draw lightning circle if it's not on top of the player
 		if (lightningActive && !lightningAlreadyActive) {
 			drawLightning(renderer, 0, 0, strike_x, strike_y);
-			scnt = 0;
+
+			// Makes the actual Llightning strike animation appear 
+			if (scnt < FCNT) {
+				SDL_Rect t{strike_x - ((lightRadius * 1.5) / 2),  strike_y - ((lightRadius * 1.5) / 2), lightRadius*1.5, lightRadius*1.5};
+				SDL_RenderCopy(renderer, Lsprite, &lightAnim[scnt++], &t);
+				cout << "Lightning running" << endl;
+			}
+			else
+			{
+				scnt = 0;
+			}
 		}
 		else {
+			// Draws the lightning cloud on the screen
 			drawLightningCloud(renderer, 0, 0, mouse_x, mouse_y);
 		}
 
